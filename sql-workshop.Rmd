@@ -1,0 +1,66 @@
+---
+title: "SQL Workshop"
+author: "Charles Lang"
+date: "9/19/2019"
+output: html_document
+---
+
+```{r}
+install.packages(c("DBI", "dbplyr", "dbplot", "modeldb", "tidypredict", "config", "RSQLite", "blob"))
+
+library(DBI)
+library(dbplyr)
+library(dplyr)
+library(dbplot)
+library(ggplot2)
+library(modeldb)
+library(tidypredict)
+library(config)
+library(blob)
+library(RSQLite)
+```
+
+## Connect to Database & Reading Tables
+```{r}
+con <- DBI::dbConnect(RSQLite::SQLite(), dbname = "mydatabase.db")
+con
+summary(con)
+dbListTables(con)
+dbReadTable(con, 'COMPANY')
+```
+## Getting into SQL
+```{r}
+#Query a portion of the database
+dbGetQuery(con, "select * from ecom limit 10")
+
+#Read Data in Batches
+query  <- dbSendQuery(con, 'select * from ecom')
+
+dbFetch(query, n = 10)
+
+dbFetch(query, n = 10)
+
+#Find the status of a query
+dbHasCompleted(query)
+
+#Get the info of a query
+dbGetInfo(query)
+
+#Latest query
+dbGetStatement(query)
+
+#Rows queried
+dbGetRowCount(query)
+
+#Rows changed by query
+dbGetRowsAffected(query)
+
+#Column info
+dbColumnInfo(query)
+
+#Clear all queries
+dbGetInfo(query)
+dbClearResult(query)
+dbGetInfo(query)
+```
+
